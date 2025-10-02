@@ -15,8 +15,12 @@ pip install -r requirements.txt
 ## Train
 python src/train.py --data data/train.csv --out models/sentiment.joblib
 
-
 ## Predict
-Run the predictions in the command line. Use any sentence you like.
+python src/predict.py "I absolutely loved it" "That was awful"
+# Output format: label  probability  text
+# Example:
+# 1    0.982    I absolutely loved it
+# 0    0.015    That was awful
 
-python src/predict.py "That was the best" "I'm happy "Whoa! That's terrible" "That's so bad"
+
+>>>>>>> 59c22d17296948cb4ea2eb5b9d941f16ef236b37
