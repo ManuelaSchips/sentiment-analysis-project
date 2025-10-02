@@ -8,7 +8,6 @@ from sklearn.pipeline import Pipeline, make_pipeline
 # New imports
 import os
 from joblib import dump
-import argparse
 
 
 def load_and_validate_data(data_path: str) -> pd.DataFrame:
@@ -50,14 +49,6 @@ def train_model(X_train: pd.Series, y_train: pd.Series) -> Pipeline:
     clf_pipeline.fit(X_train, y_train)
     return clf_pipeline
 
-# New function
-def save_model(model: Pipeline, model_path: str) -> None:
-    """
-    Saves the trained model to a file.
-    """
-    os.makedirs(os.path.dirname(model_path), exist_ok=True)
-    dump(model, model_path)
-    print(f"Saved model to {model_path}")
     
 def main(data_path: str, model_path: str) -> None:
     """
@@ -72,6 +63,14 @@ def main(data_path: str, model_path: str) -> None:
     print(f"Test accuracy: {acc:.3f}")
 
     save_model(clf, model_path)
+
+def save_model(model: Pipeline, model_path: str) -> None:
+    """
+    Saves the trained model to a file.
+    """
+    os.makedirs(os.path.dirname(model_path), exist_ok=True)
+    dump(model, model_path)
+    print(f"Saved model to {model_path}")
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
