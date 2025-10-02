@@ -8,6 +8,8 @@ from sklearn.pipeline import Pipeline, make_pipeline
 # New imports
 import os
 from joblib import dump
+import argparse
+
 
 def load_and_validate_data(data_path: str) -> pd.DataFrame:
     """
@@ -18,6 +20,13 @@ def load_and_validate_data(data_path: str) -> pd.DataFrame:
         raise ValueError("CSV must contain 'text' and 'label' columns")
     return df
 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data", default="data/sentiments.csv")
+    parser.add_argument("--out", default="models/sentiment.joblib")
+
+    args: argparse.Namespace = parser.parse_args()
+    main(data_path=args.data, model_path=args.out)
     
 def split_data(
     df: pd.DataFrame,
