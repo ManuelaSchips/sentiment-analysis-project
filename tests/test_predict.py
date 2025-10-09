@@ -11,7 +11,7 @@ def model():
 POS_LABEL = 1  # 1 = positiv
 NEG_LABEL = 0  # 0 = negativ
 
-MODEL_PATH = "/Users/ela/Documents/sentiment-analysis-project/models/sentiment.joblib"
+MODEL_PATH = "./models/sentiment.joblib"
 
 def test_positive_sentence():
     clf = load_model(MODEL_PATH)
