@@ -1,10 +1,12 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+
 # Add this import at the top
 import argparse
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline, make_pipeline
+
 # New imports
 import os
 from joblib import dump
@@ -19,7 +21,7 @@ def load_and_validate_data(data_path: str) -> pd.DataFrame:
         raise ValueError("CSV must contain 'text' and 'label' columns")
     return df
 
-    
+
 def split_data(
     df: pd.DataFrame,
 ) -> tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
@@ -29,15 +31,20 @@ def split_data(
     try:
         # Stratified split is preferred
         X_train, X_test, y_train, y_test = train_test_split(
-            df["text"], df["label"], test_size=0.2, random_state=42, stratify=df["label"]
+            df["text"],
+            df["label"],
+            test_size=0.2,
+            random_state=42,
+            stratify=df["label"],
         )
     except ValueError:
         # Fallback if stratification fails (e.g., on very small datasets)
         X_train, X_test, y_train, y_test = train_test_split(
             df["text"], df["label"], test_size=0.2, random_state=42
         )
-    return X_train, X_test, y_train, y_test    
-    
+    return X_train, X_test, y_train, y_test
+
+
 def train_model(X_train: pd.Series, y_train: pd.Series) -> Pipeline:
     """
     Builds and trains a classification pipeline.
@@ -49,7 +56,7 @@ def train_model(X_train: pd.Series, y_train: pd.Series) -> Pipeline:
     clf_pipeline.fit(X_train, y_train)
     return clf_pipeline
 
-    
+
 def main(data_path: str, model_path: str) -> None:
     """
     Main workflow to load, train, evaluate, and save the model.
@@ -64,6 +71,7 @@ def main(data_path: str, model_path: str) -> None:
 
     save_model(clf, model_path)
 
+
 def save_model(model: Pipeline, model_path: str) -> None:
     """
     Saves the trained model to a file.
@@ -71,7 +79,8 @@ def save_model(model: Pipeline, model_path: str) -> None:
     os.makedirs(os.path.dirname(model_path), exist_ok=True)
     dump(model, model_path)
     print(f"Saved model to {model_path}")
-    
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", default="data/sentiments.csv")

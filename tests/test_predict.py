@@ -13,11 +13,13 @@ NEG_LABEL = 0  # 0 = negativ
 
 MODEL_PATH = "./models/sentiment.joblib"
 
+
 def test_positive_sentence():
     clf = load_model(MODEL_PATH)
     texts = ["I love this movie, it was fantastic and inspiring!"]
     preds, _ = predict_texts(clf, texts)
     assert preds[0] == POS_LABEL
+
 
 def test_negative_sentence():
     clf = load_model(MODEL_PATH)
