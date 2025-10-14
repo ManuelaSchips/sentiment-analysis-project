@@ -77,3 +77,4 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/sentiment-analysis-app:latest
+# gggg
