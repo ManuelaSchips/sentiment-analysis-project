@@ -43,9 +43,48 @@ def main(model_path: str, input_texts: list[str]) -> None:
         print(line)
 
 
+#if __name__ == "__main__":
+#    parser = argparse.ArgumentParser()
+#    parser.add_argument("--model", default="models/sentiment.joblib")
+#    parser.add_argument("--input", help="Pfad zu Input-CSV mit Spalte 'text'")
+#    parser.add_argument("--output", help="Pfad zur Output)
+#    parser.add_argument("text", nargs="+", help="One or more texts to score")
+#    args = parser.parse_args()
+#    main(model_path=args.model, input_texts=args.text)
+
 if __name__ == "__main__":
+    import os
+    import sys
+    import pandas as pd
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", default="models/sentiment.joblib")
-    parser.add_argument("text", nargs="+", help="One or more texts to score")
+    parser.add_argument("--input", help="Pfad zur Input-CSV mit Spalte 'text'")
+    parser.add_argument("--output", help="Pfad zur Output-CSV-Datei")
+    parser.add_argument("text", nargs="*", help="Ein oder mehrere Texte für Einzelvorhersage")
     args = parser.parse_args()
-    main(model_path=args.model, input_texts=args.text)
+
+    # Wenn Input/Output gesetzt → CSV-Modus
+    if args.input and args.output:
+        if not os.path.exists(args.input):
+            sys.exit(f"❌ Input-Datei nicht gefunden: {args.input}")
+
+        df = pd.read_csv(args.input)
+        if "text" not in df.columns:
+            sys.exit("❌ In der CSV fehlt die Spalte 'text'.")
+
+        classifier = load_model(args.model)
+        preds, probs = predict_texts(classifier, df["text"].astype(str).tolist())
+        df["pred_label"] = preds
+        df["pred_score"] = probs
+        os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
+        df.to_csv(args.output, index=False)
+        print(f"✅ Ergebnisse gespeichert in: {args.output}")
+
+    # Wenn Text(e) übergeben → Einzelmodus
+    elif args.text:
+        main(model_path=args.model, input_texts=args.text)
+
+    # Wenn nichts angegeben → Hinweis
+    else:
+        sys.exit("❌ Bitte entweder --input/--output oder Text(e) angeben.")
